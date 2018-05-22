@@ -1,0 +1,103 @@
+const {
+  BaseKonnector,
+  requestFactory,
+  signin,
+  scrape,
+  saveBills,
+  log
+} = require('cozy-konnector-libs')
+const moment = require('moment')
+const request = requestFactory({
+  cheerio: true,
+  json: false,
+  jar: true
+})
+
+const baseUrl = 'https://www.digitick.com'
+
+module.exports = new BaseKonnector(start)
+
+async function start(fields) {
+  log('info', 'Authenticating ...')
+  await authenticate(fields.login, fields.password)
+  log('info', 'Successfully logged in')
+  log('info', 'Fetching the list of documents')
+  const $ = await request(`${baseUrl}/index-css4-digitick-pg1101-solde1.html`)
+  log('info', 'Parsing list of documents')
+  const documents = await parseDocuments($)
+
+  log('info', 'Saving data to Cozy')
+  await saveBills(documents, fields.folderPath, {
+    identifiers: ['digitick']
+  })
+}
+
+function authenticate(tel, passwd) {
+  return signin({
+    url: 'https://www.digitick.com/index-css4-digitick-pg1001.html',
+    formSelector: '#contenuformulaire form',
+    formData: { tel, passwd },
+    validate: (statusCode, $) => {
+      if ($('#contenuformulaire form').length === 0) {
+        return true
+      } else {
+        log('error', $('.error').text())
+        return false
+      }
+    }
+  })
+}
+
+function parseDocuments($) {
+  const docs = scrape(
+    $,
+    {
+      eventname: {
+        sel: 'tbody tr:nth-child(3) td dl dd span:nth-child(1)'
+      },
+      eventdate: {
+        sel: 'tbody tr:nth-child(3) td dl dd span:nth-child(2)'
+      },
+      eventplace: {
+        sel: 'tbody tr:nth-child(3) td dl dd span:nth-child(3)'
+      },
+      invoicename: {
+        sel: 'tbody tr:nth-child(1) th span:nth-child(1)'
+      },
+      fileurl: {
+        sel: 'tbody tr:nth-child(1) th a',
+        attr: 'href'
+      },
+      amount: {
+        sel: 'tbody tr:nth-child(1) th span:nth-child(6)'
+      },
+      date: {
+        sel: 'tbody tr:nth-child(1) th span:nth-child(2)'
+      }
+    },
+    '#contentTransaction table'
+  )
+  return docs.map(({ invoicename, fileurl, amount, date, ...event }) => ({
+    invoicename,
+    fileurl,
+    event: {
+      ...event
+    },
+    date: getDate(date),
+    currency: '€',
+    vendor: 'template',
+    metadata: {
+      importDate: new Date(),
+      version: 1
+    },
+    amount: getAmount(amount)
+  }))
+}
+
+function getDate(date) {
+  return moment(date, 'DD/MM/YYYY - HH:mm').toDate()
+}
+
+function getAmount(amount) {
+  return /\d+/g.exec(amount).pop()
+}
