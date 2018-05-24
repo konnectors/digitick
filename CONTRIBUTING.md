@@ -1,4 +1,4 @@
-How to contribute to Cozy Konnector?
+How to contribute to a Cozy Connector?
 ====================================
 
 Thank you for your interest in contributing to Cozy! There are many ways to contribute, and we appreciate all of them.
@@ -23,7 +23,7 @@ Opening an issue is as easy as following [this link][issues] and filling out the
 - What did you try, step by step?
 - What did you expect?
 - What did happen instead?
-- What is the version of the Cozy Konnector?
+- What is the version of the Cozy Connector?
 
 
 Pull Requests
@@ -102,19 +102,6 @@ $ git pull-request -b master -m "My PR message" -o
 ```
 
 Pull requests are usually reviewed within a few days. If there are comments to address, apply your changes in a separate commit and push that to your branch. Post a comment in the pull request afterwards; GitHub doesn't send out notifications when you add commits.
-
-
-Writing documentation
----------------------
-
-Documentation improvements are very welcome. We try to keep a good documentation in the `/docs` folder. But, you know, we are developers, we can forget to document important stuff that look obvious to us. And documentation can always be improved.
-
-
-Translations
-------------
-
-The Cozy Konnector is translated on a platform called [Transifex][tx]. [This tutorial][tx-start] can help you to learn how to make your first steps here. If you have any question, don't hesitate to ask us!
-
 
 Community
 ---------
