@@ -1,4 +1,4 @@
-[Cozy][cozy] Konnector Digitick
+[Cozy][cozy] Connector Digitick
 =======================================
 
 What's Cozy?
@@ -11,29 +11,7 @@ What's Cozy?
 What is this konnector about ?
 ------------------------------
 
-This konnector retrieves your invoices from https://www.digitick.com
-
-```json
-{
-  "invoicename": "Achat N�61133225",
-  "fileurl": "https://www.digitick.com/getDocument.php/1/1/2/1341/1/352/61133225/0/a7188d/facture-61133225.pdf",
-  "event":
-   {
-      "eventname": "RODRIGO Y GABRIELA",
-      "eventdate": "14/02/2013 � 20:00",
-      "eventplace": "LE BIKINI (31)"
-    },
-  "date": 2016-02-18T08:50:00.000Z,
-  "currency": "€",
-  "vendor": "template",
-  "metadata": {
-    "importDate": 2018-05-22T16:22:23.647Z,
-    "version": 1
-  },
-  "amount": "60",
-  "invoice": "io.cozy.files:facture-61133225.pdf"
-}
-```
+This konnector retrieves your invoices from https://www.digitick.com.
 
 ### Open a Pull-Request
 
@@ -49,7 +27,10 @@ Create a `konnector-dev-config.json` file at the root with your test credentials
 ```javascript
 {
   "COZY_URL": "http://cozy.tools:8080",
-  "fields": {"login":"zuck.m@rk.fb", "password":"123456"}
+  "fields": {
+    "login":"zuck.m@rk.fb",
+    "password":"123456"
+  }
 }
 ```
 Then :
@@ -66,7 +47,7 @@ This connector uses [cozy-konnector-libs](https://github.com/cozy/cozy-konnector
 
 ### Maintainer
 
-The lead maintainers for this konnector is [@enguerran](https://github.com/enguerran)
+The lead maintainers for this konnector is @konnectors/maintainers
 
 
 ### Get in touch
