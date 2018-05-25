@@ -81,25 +81,37 @@ function parseDocuments($) {
     },
     '#contentTransaction table'
   )
-  return docs.map(({ invoicename, fileurl, amount, date, ...event }) => ({
-    invoicename,
-    fileurl,
-    event: {
-      ...event
-    },
-    date: getDate(date),
-    currency: '€',
-    vendor: 'template',
-    metadata: {
-      importDate: new Date(),
-      version: 1
-    },
-    amount: getAmount(amount)
-  }))
+  return docs.map(
+    ({
+      invoicename,
+      fileurl,
+      amount,
+      date,
+      eventname,
+      eventdate,
+      eventplace
+    }) => ({
+      invoicename,
+      fileurl,
+      event: {
+        name: eventname,
+        date: parseToDate(eventdate, 'DD/MM/YYYY � HH:mm'),
+        place: eventplace
+      },
+      date: parseToDate(date, 'DD/MM/YYYY - HH:mm'),
+      currency: '€',
+      vendor: 'template',
+      metadata: {
+        importDate: new Date(),
+        version: 1
+      },
+      amount: getAmount(amount)
+    })
+  )
 }
 
-function getDate(date) {
-  return moment(date, 'DD/MM/YYYY - HH:mm').toDate()
+function parseToDate(date, format) {
+  return moment(date, format).toDate()
 }
 
 function getAmount(amount) {
