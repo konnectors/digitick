@@ -115,5 +115,5 @@ function parseToDate(date, format) {
 }
 
 function getAmount(amount) {
-  return /\d+/g.exec(amount).pop()
+  return parseFloat(/\d+/g.exec(amount).pop())
 }
