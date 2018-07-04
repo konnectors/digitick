@@ -84,5 +84,6 @@
       }
     }
   },
+  "banksTransactionRegExp": "\\bdigitick\\b",
   "manifest_version": "2"
 }
