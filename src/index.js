@@ -36,16 +36,17 @@ async function start(fields) {
   })
 }
 
-function authenticate(tel, passwd) {
+function authenticate(email, passwd) {
   return signin({
     url: `${baseUrl}/user/login`,
-    formSelector: '#contenuformulaire form',
-    formData: { tel, passwd },
+    formSelector: 'form[action="/login/st"]',
+    formData: { "User.Email": email, "Password": passwd },
     validate: (statusCode, $) => {
-      if ($('#contenuformulaire form').length === 0) {
+      if($('.field-validation-error').length === 0) {
         return true
-      } else {
-        log('error', $('.error').text())
+      }
+      else {
+        log('error', $('.field-validation-error').text())
         return false
       }
     }
