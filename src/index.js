@@ -38,7 +38,7 @@ async function start(fields) {
 
 function authenticate(tel, passwd) {
   return signin({
-    url: 'https://www.digitick.com/index-css4-digitick-pg1001.html',
+    url: `${baseUrl}/user/login`,
     formSelector: '#contenuformulaire form',
     formData: { tel, passwd },
     validate: (statusCode, $) => {
