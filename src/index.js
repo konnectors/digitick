@@ -119,8 +119,12 @@ async function parseDocuments($) {
   )
 }
 
-function parseToDate(date, format) {
+/* function parseToDate(date, format) {
   return moment(date, format).toDate()
+} */
+
+function parseStringAmount(amount) {
+  return amount.replace('€', '') + ' €'
 }
 
 function getAmount(amount) {
