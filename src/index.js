@@ -26,7 +26,7 @@ async function start(fields) {
   await authenticate(fields.login, fields.password)
   log('info', 'Successfully logged in')
   log('info', 'Fetching the list of documents')
-  const $ = await request(`${baseUrl}/index-css4-digitick-pg1101-solde1.html`)
+  const $ = await request(`${baseUrl}/user/orders`)
   log('info', 'Parsing list of documents')
   const documents = await parseDocuments($)
 
