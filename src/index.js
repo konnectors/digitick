@@ -123,6 +123,10 @@ async function parseDocuments($) {
   return moment(date, format).toDate()
 } */
 
+function parseName(name) {
+  return name.replace(',', '')
+}
+
 function parseStringAmount(amount) {
   return amount.replace('€', '') + ' €'
 }
