@@ -152,3 +152,12 @@ function parseAddress(address) {
   address.street = parts[0]
   return address
 }
+
+/**
+ * Get vendor reference from the html title of the order
+ * @param {*} title 
+ */
+function parseVendorRef(title) {
+  title = title.split(' ')
+  return title[7]
+}
