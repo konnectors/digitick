@@ -120,6 +120,17 @@ async function parseDocuments($) {
 }
 
 /**
+ * Retreive transaction fee amount and quantity from html
+ * @param {*} $doc
+ */
+function parseTransactionFee($doc) {
+  var quantity = $doc('.g-order-summary-item-name', '.g-order-summary-item.transaction-fee').text()
+  quantity = quantity.trim().split(' ')[0]
+  amount = $doc('#jsTransactionFee').text().trim().replace('€', '') + ' €'
+  return { quantity, amount }
+}
+
+/**
  * For each order items, generate an html row
  * @param {*} $doc 
  * @return String html : all the html rows
