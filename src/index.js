@@ -119,6 +119,32 @@ async function parseDocuments($) {
   )
 }
 
+/**
+ * For each order items, generate an html row
+ * @param {*} $doc 
+ * @return String html : all the html rows
+ */
+function generateRows($doc) {
+  const items = $doc('li', 'ul.g-order-summary-items').not('.transaction-fee').toArray()
+  var html = ""
+
+  items.forEach(item => {
+    const parts = $doc(item).text().split(' ')
+
+    const quantity = parts[0].trim()
+    const price = parts[2].trim() + ' ' + parts[3].trim()
+    var amount = $doc('.g-order-summary-item-amount', item).data('face-value-total')
+    amount = amount.trim().replace('€', '') + ' €'
+
+    html += `<tr>
+              <td>${price}</td>
+              <td>${amount}</td>
+              <td>${quantity}</td>
+             </tr>`
+  })
+  return html
+}
+
 /* function parseToDate(date, format) {
   return moment(date, format).toDate()
 } */
