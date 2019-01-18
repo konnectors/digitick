@@ -161,3 +161,50 @@ function parseVendorRef(title) {
   title = title.split(' ')
   return title[7]
 }
+
+function parseDate(date) {
+  date = date.replace(' à', '')
+  date = date.replace('Commande reçue ', '')
+  date = date.split(' ')
+
+  switch (date[2]) {
+    case "janv.":
+      date[2] = '01'
+      break
+    case "févr.":
+      date[2] = '02'
+      break
+    case "mars":
+      date[2] = '03'
+      break
+    case "avr.":
+      date[2] = '04'
+      break
+    case "mai.":
+      date[2] = '05'
+      break
+    case "juin":
+      date[2] = '06'
+      break
+    case "juill.":
+      date[2] = '07'
+      break
+    case "aout":
+      date[2] = '08'
+      break
+    case "sept.":
+      date[2] = '09'
+      break
+    case "oct.":
+      date[2] = '10'
+      break
+    case "nov.":
+      date[2] = '11'
+      break
+    case "déc.":
+      date[2] = '12'
+      break
+  }
+  const day = `${date[3]}-${date[2]}-${date[1]}`
+  return new Date(`${day} ${date[4]}`)
+}
