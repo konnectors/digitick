@@ -2,15 +2,19 @@ process.env.SENTRY_DSN =
   process.env.SENTRY_DSN ||
   'https://b0044b1751f54dfeb75938902f360675:806f25ddaa154985874854c9839ea392@sentry.cozycloud.cc/58'
 
+const cheerio = require('cheerio')
+
 const {
   BaseKonnector,
   requestFactory,
   signin,
   scrape,
   saveBills,
+  htmlToPDF,
+  createCozyPDFDocument,
   log
 } = require('cozy-konnector-libs')
-const moment = require('moment')
+//const moment = require('moment')
 const request = requestFactory({
   cheerio: true,
   json: false,
@@ -32,7 +36,8 @@ async function start(fields) {
 
   log('info', 'Saving data to Cozy')
   await saveBills(documents, fields.folderPath, {
-    identifiers: ['digitick']
+    identifiers: ['digitick'],
+    contentType: 'application/pdf'
   })
 }
 
@@ -100,21 +105,73 @@ async function parseDocuments($) {
         },
       }
     )
+
+    const rows = generateRows($doc)
+    const transactionFee = parseTransactionFee($doc)
+
+    const html =
+      `<body>
+          <h5>Commande n°${doc.vendorRef}</h5>
+          <p>${doc.stringDate}</p>
+          <p><b>${doc.eventlabel}</b> - ${doc.eventdate} \n&nbsp</p>
+          <table>
+            <th><b>Tarif</b></th>
+            <th><b>Montant</b></th>
+            <th><b>Quantité</b></th>
+            ${rows}
+            <tr>
+              <td>Frais de réservation</td>
+              <td>${transactionFee.amount}</td>
+              <td>${transactionFee.quantity}</td>
+            </tr>
+            <tr>
+              <td><b>Total</b></td>
+              <td colspan="2"><b>${doc.stringAmount}</b></td>
+            </tr>
+          </table>
+          <p> \n&nbsp </p>
+          <span><b>Adresse de facturation</b></span>
+          <span>${doc.customerName}</span>
+          <span>${doc.customerAddress.street}</span>
+          <span>${doc.customerAddress.city}</span>
+          <span>${doc.customerAddress.zipCode}</span>
+          <span>${doc.customerAddress.country}</span>
+      </body>`
+
+    const $html = cheerio.load(html)
+
+    var pdf = createCozyPDFDocument(
+      'Généré par le collecteur Cozy',
+      link
+    )
+    htmlToPDF($html, pdf, $html('body'))
+    doc.filestream = pdf
+    doc.filestream.end()
+
+    doc.formatedDate = `${doc.date.getFullYear()}-${("0" + (doc.date.getMonth() + 1)).slice(-2)}-${("0" + doc.date.getDate()).slice(-2)}`
+
+    docs.push(doc)
   }
 
   return docs.map(
     ({
+      vendorRef,
       amount,
       date,
+      filestream,
+      formatedDate
     }) => ({
+      vendorRef,
       date,
       currency: '€',
       vendor: 'digitick',
+      filename: `${formatedDate}_digitick_${amount}€_${vendorRef}.pdf`,
       metadata: {
         importDate: new Date(),
         version: 1
       },
-      amount
+      amount,
+      filestream
     })
   )
 }
@@ -176,7 +233,7 @@ function parseAddress(address) {
   var parts = address.split('\n') // get each line of the address
   for (var i = 0; i < parts.length; i++) { // for each line
     // Remove spaces
-    for(var e = 0; e<2; e++) {
+    for (var e = 0; e < 2; e++) {
       parts[i] = parts[i].trim()
       if (parts[i] === '') {
         parts.splice(i, 1)
