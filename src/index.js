@@ -130,3 +130,25 @@ function parseStringAmount(amount) {
 function getAmount(amount) {
   return parseFloat(/\d+/g.exec(amount).pop())
 }
+
+function parseAddress(address) {
+  var parts = address.split('\n') // get each line of the address
+  for (var i = 0; i < parts.length; i++) { // for each line
+    // Remove spaces
+    for(var e = 0; e<2; e++) {
+      parts[i] = parts[i].trim()
+      if (parts[i] === '') {
+        parts.splice(i, 1)
+      }
+    }
+    parts[i] = parts[i].trim()
+    parts[i] = parts[i].replace(',', '')
+  }
+
+  address = {}
+  address.zipCode = parts[2]
+  address.country = parts[3]
+  address.city = parts[1]
+  address.street = parts[0]
+  return address
+}
