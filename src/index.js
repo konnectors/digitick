@@ -42,7 +42,7 @@ function authenticate(email, passwd) {
     formSelector: 'form[action="/login/st"]',
     formData: { "User.Email": email, "Password": passwd },
     validate: (statusCode, $) => {
-      if($('.field-validation-error').length === 0) {
+      if ($('.field-validation-error').length === 0) {
         return true
       }
       else {
@@ -53,60 +53,68 @@ function authenticate(email, passwd) {
   })
 }
 
-function parseDocuments($) {
-  const docs = scrape(
-    $,
-    {
-      eventname: {
-        sel: 'tbody tr:nth-child(3) td dl dd span:nth-child(1)'
-      },
-      eventdate: {
-        sel: 'tbody tr:nth-child(3) td dl dd span:nth-child(2)'
-      },
-      eventplace: {
-        sel: 'tbody tr:nth-child(3) td dl dd span:nth-child(3)'
-      },
-      invoicename: {
-        sel: 'tbody tr:nth-child(1) th span:nth-child(1)'
-      },
-      fileurl: {
-        sel: 'tbody tr:nth-child(1) th a',
-        attr: 'href'
-      },
-      amount: {
-        sel: 'tbody tr:nth-child(1) th span:nth-child(6)'
-      },
-      date: {
-        sel: 'tbody tr:nth-child(1) th span:nth-child(2)'
+async function parseDocuments($) {
+  var docs = []
+
+  // Open each event link to retreive informations about order
+  const events = $('li', '#user-order-list ul.customer-order-list').toArray()
+  for (var i = 0; i < events.length; i++) {
+    const link = baseUrl + $('a.g-blocklist-link.view-order-link', events[i]).attr('href')
+    const $doc = await request(link)
+
+    const doc = scrape(
+      $doc('body'),
+      {
+        vendorRef: {
+          sel: 'header h2',
+          parse: parseVendorRef
+        },
+        eventlabel: {
+          sel: 'strong.g-order-summary-top-title'
+        },
+        eventdate: {
+          sel: 'span.pv-sharedreponsive-connected-event-time',
+        },
+        date: {
+          sel: '.g-ui-box-content p:first-child:not(.g-order-summary-top)',
+          parse: parseDate
+        },
+        stringDate: {
+          sel: '.g-ui-box-content p:first-child:not(.g-order-summary-top)',
+        },
+        amount: {
+          sel: '#jsOrderTotal',
+          parse: getAmount
+        },
+        stringAmount: {
+          sel: '#jsOrderTotal',
+          parse: parseStringAmount
+        },
+        customerName: {
+          sel: '.cs-order-address-customer-name',
+          parse: parseName
+        },
+        customerAddress: {
+          sel: '.cs-order-address-customer-address',
+          parse: parseAddress
+        },
       }
-    },
-    '#contentTransaction table'
-  )
+    )
+  }
+
   return docs.map(
     ({
-      invoicename,
-      fileurl,
       amount,
       date,
-      eventname,
-      eventdate,
-      eventplace
     }) => ({
-      invoicename,
-      fileurl,
-      event: {
-        name: eventname,
-        date: parseToDate(eventdate, 'DD/MM/YYYY � HH:mm'),
-        place: eventplace
-      },
-      date: parseToDate(date, 'DD/MM/YYYY - HH:mm'),
+      date,
       currency: '€',
-      vendor: 'template',
+      vendor: 'digitick',
       metadata: {
         importDate: new Date(),
         version: 1
       },
-      amount: getAmount(amount)
+      amount
     })
   )
 }
