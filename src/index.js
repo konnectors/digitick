@@ -107,7 +107,6 @@ async function parseDocuments($) {
     )
 
     const rows = generateRows($doc)
-    const transactionFee = parseTransactionFee($doc)
 
     const html =
       `<body>
@@ -120,11 +119,6 @@ async function parseDocuments($) {
             <th><b>Montant</b></th>
             <th><b>Quantité</b></th>
             ${rows}
-            <tr>
-              <td>Frais de réservation</td>
-              <td>${transactionFee.amount}</td>
-              <td>${transactionFee.quantity}</td>
-            </tr>
             <tr>
               <td><b>Total</b></td>
               <td colspan="2"><b>${doc.stringAmount}</b></td>
@@ -176,35 +170,32 @@ async function parseDocuments($) {
 }
 
 /**
- * Retreive transaction fee amount and quantity from html
- * @param {*} $doc
- */
-function parseTransactionFee($doc) {
-  var quantity = $doc('.g-order-summary-item-name', '.g-order-summary-item.transaction-fee').text()
-  quantity = quantity.trim().split(' ')[0]
-  amount = $doc('#jsTransactionFee').text().trim().replace('€', '') + ' €'
-  return { quantity, amount }
-}
-
-/**
  * For each order items, generate an html row
  * @param {*} $doc 
  * @return String html : all the html rows
  */
 function generateRows($doc) {
-  const items = $doc('li', 'ul.g-order-summary-items').not('.transaction-fee').toArray()
+  const items = $doc('li', 'ul.g-order-summary-items').toArray()
   var html = ""
 
   items.forEach(item => {
-    const parts = $doc(item).text().split(' ')
+    $doc('a').remove()
+    const tariffParts = $doc('.g-order-summary-item-name', item).text().split(' ')
 
-    const quantity = parts[0].trim()
-    const price = parts[2].trim() + ' ' + parts[3].trim()
+    const quantity = tariffParts[0].trim()
+    let tariff = ""
+    for (var i = 2; i < tariffParts.length; i++) {
+      tariff += tariffParts[i].trim() + ' '
+    }
+
     var amount = $doc('.g-order-summary-item-amount', item).data('face-value-total')
+    if (amount === undefined) {
+      amount = $doc('.g-order-summary-item-amount', item).text()
+    }
     amount = amount.trim().replace('€', '') + ' €'
 
     html += `<tr>
-              <td>${price}</td>
+              <td>${tariff}</td>
               <td>${amount}</td>
               <td>${quantity}</td>
              </tr>`
