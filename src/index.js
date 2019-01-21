@@ -89,7 +89,7 @@ async function parseDocuments($) {
         },
         amount: {
           sel: '#jsOrderTotal',
-          parse: getAmount
+          parse: parseAmount
         },
         stringAmount: {
           sel: '#jsOrderTotal',
@@ -224,8 +224,10 @@ function parseStringAmount(amount) {
   return amount.replace('€', '') + ' €'
 }
 
-function getAmount(amount) {
-  return parseFloat(/\d+/g.exec(amount).pop())
+function parseAmount(amount) {
+  amount = amount.replace('€', '')
+  amount = amount.replace(',', '.')
+  return parseFloat(amount)
 }
 
 function parseAddress(address) {
