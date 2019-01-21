@@ -111,7 +111,8 @@ async function parseDocuments($) {
 
     const html =
       `<body>
-          <h5>Commande n°${doc.vendorRef}</h5>
+          <h5>Digitick</h5>
+          <p><b>&nbsp\n Commande n°${doc.vendorRef}</b></p>
           <p>${doc.stringDate}</p>
           <p><b>${doc.eventlabel}</b> - ${doc.eventdate} \n&nbsp</p>
           <table>
@@ -129,11 +130,9 @@ async function parseDocuments($) {
               <td colspan="2"><b>${doc.stringAmount}</b></td>
             </tr>
           </table>
-          <p> \n&nbsp </p>
-          <span><b>Adresse de facturation</b></span>
+          <p><b>&nbsp\n Adresse de facturation</b></p>
           <span>${doc.customerName}</span>
-          <span>${doc.customerAddress.street}</span>
-          <span>${doc.customerAddress.city}</span>
+          <span>${doc.customerAddress.street} ${doc.customerAddress.city}</span>
           <span>${doc.customerAddress.zipCode}</span>
           <span>${doc.customerAddress.country}</span>
       </body>`
@@ -141,7 +140,7 @@ async function parseDocuments($) {
     const $html = cheerio.load(html)
 
     var pdf = createCozyPDFDocument(
-      'Généré par le collecteur Cozy',
+      'Généré par Cozy',
       link
     )
     htmlToPDF($html, pdf, $html('body'))
