@@ -45,12 +45,11 @@ function authenticate(email, passwd) {
   return signin({
     url: `${baseUrl}/user/login`,
     formSelector: 'form[action="/login/st"]',
-    formData: { "User.Email": email, "Password": passwd },
+    formData: { 'User.Email': email, Password: passwd },
     validate: (statusCode, $) => {
       if ($('.field-validation-error').length === 0) {
         return true
-      }
-      else {
+      } else {
         log('error', $('.field-validation-error').text())
         return false
       }
@@ -64,52 +63,49 @@ async function parseDocuments($) {
   // Open each event link to retreive informations about order
   const events = $('li', '#user-order-list ul.customer-order-list').toArray()
   for (var i = 0; i < events.length; i++) {
-    const link = baseUrl + $('a.g-blocklist-link.view-order-link', events[i]).attr('href')
+    const link =
+      baseUrl + $('a.g-blocklist-link.view-order-link', events[i]).attr('href')
     const $doc = await request(link)
 
-    const doc = scrape(
-      $doc('body'),
-      {
-        vendorRef: {
-          sel: 'header h2',
-          parse: parseVendorRef
-        },
-        eventlabel: {
-          sel: 'strong.g-order-summary-top-title'
-        },
-        eventdate: {
-          sel: 'span.pv-sharedreponsive-connected-event-time',
-        },
-        date: {
-          sel: '.g-ui-box-content p:first-child:not(.g-order-summary-top)',
-          parse: parseDate
-        },
-        stringDate: {
-          sel: '.g-ui-box-content p:first-child:not(.g-order-summary-top)',
-        },
-        amount: {
-          sel: '#jsOrderTotal',
-          parse: parseAmount
-        },
-        stringAmount: {
-          sel: '#jsOrderTotal',
-          parse: parseStringAmount
-        },
-        customerName: {
-          sel: '.cs-order-address-customer-name',
-          parse: parseName
-        },
-        customerAddress: {
-          sel: '.cs-order-address-customer-address',
-          parse: parseAddress
-        },
+    const doc = scrape($doc('body'), {
+      vendorRef: {
+        sel: 'header h2',
+        parse: parseVendorRef
+      },
+      eventlabel: {
+        sel: 'strong.g-order-summary-top-title'
+      },
+      eventdate: {
+        sel: 'span.pv-sharedreponsive-connected-event-time'
+      },
+      date: {
+        sel: '.g-ui-box-content p:first-child:not(.g-order-summary-top)',
+        parse: parseDate
+      },
+      stringDate: {
+        sel: '.g-ui-box-content p:first-child:not(.g-order-summary-top)'
+      },
+      amount: {
+        sel: '#jsOrderTotal',
+        parse: parseAmount
+      },
+      stringAmount: {
+        sel: '#jsOrderTotal',
+        parse: parseStringAmount
+      },
+      customerName: {
+        sel: '.cs-order-address-customer-name',
+        parse: parseName
+      },
+      customerAddress: {
+        sel: '.cs-order-address-customer-address',
+        parse: parseAddress
       }
-    )
+    })
 
     const rows = generateRows($doc)
 
-    const html =
-      `<body>
+    const html = `<body>
           <h5>Digitick</h5>
           <p><b>&nbsp\n Commande n°${doc.vendorRef}</b></p>
           <p>${doc.stringDate}</p>
@@ -133,62 +129,58 @@ async function parseDocuments($) {
 
     const $html = cheerio.load(html)
 
-    var pdf = createCozyPDFDocument(
-      'Généré par Cozy',
-      link
-    )
+    var pdf = createCozyPDFDocument('Généré par Cozy', link)
     htmlToPDF($html, pdf, $html('body'))
     doc.filestream = pdf
     doc.filestream.end()
 
-    doc.formatedDate = `${doc.date.getFullYear()}-${("0" + (doc.date.getMonth() + 1)).slice(-2)}-${("0" + doc.date.getDate()).slice(-2)}`
+    doc.formatedDate = `${doc.date.getFullYear()}-${(
+      '0' +
+      (doc.date.getMonth() + 1)
+    ).slice(-2)}-${('0' + doc.date.getDate()).slice(-2)}`
 
     docs.push(doc)
   }
 
-  return docs.map(
-    ({
-      vendorRef,
-      amount,
-      date,
-      filestream,
-      formatedDate
-    }) => ({
-      vendorRef,
-      date,
-      currency: '€',
-      vendor: 'digitick',
-      filename: `${formatedDate}_digitick_${amount}€_${vendorRef}.pdf`,
-      metadata: {
-        importDate: new Date(),
-        version: 1
-      },
-      amount,
-      filestream
-    })
-  )
+  return docs.map(({ vendorRef, amount, date, filestream, formatedDate }) => ({
+    vendorRef,
+    date,
+    currency: '€',
+    vendor: 'digitick',
+    filename: `${formatedDate}_digitick_${amount}€_${vendorRef}.pdf`,
+    metadata: {
+      importDate: new Date(),
+      version: 1
+    },
+    amount,
+    filestream
+  }))
 }
 
 /**
  * For each order items, generate an html row
- * @param {*} $doc 
+ * @param {*} $doc
  * @return String html : all the html rows
  */
 function generateRows($doc) {
   const items = $doc('li', 'ul.g-order-summary-items').toArray()
-  var html = ""
+  var html = ''
 
   items.forEach(item => {
     $doc('a').remove()
-    const tariffParts = $doc('.g-order-summary-item-name', item).text().split(' ')
+    const tariffParts = $doc('.g-order-summary-item-name', item)
+      .text()
+      .split(' ')
 
     const quantity = tariffParts[0].trim()
-    let tariff = ""
+    let tariff = ''
     for (var i = 2; i < tariffParts.length; i++) {
       tariff += tariffParts[i].trim() + ' '
     }
 
-    var amount = $doc('.g-order-summary-item-amount', item).data('face-value-total')
+    var amount = $doc('.g-order-summary-item-amount', item).data(
+      'face-value-total'
+    )
     if (amount === undefined) {
       amount = $doc('.g-order-summary-item-amount', item).text()
     }
@@ -223,7 +215,8 @@ function parseAmount(amount) {
 
 function parseAddress(address) {
   var parts = address.split('\n') // get each line of the address
-  for (var i = 0; i < parts.length; i++) { // for each line
+  for (var i = 0; i < parts.length; i++) {
+    // for each line
     // Remove spaces
     for (var e = 0; e < 2; e++) {
       parts[i] = parts[i].trim()
@@ -245,7 +238,7 @@ function parseAddress(address) {
 
 /**
  * Get vendor reference from the html title of the order
- * @param {*} title 
+ * @param {*} title
  */
 function parseVendorRef(title) {
   title = title.split(' ')
@@ -258,40 +251,40 @@ function parseDate(date) {
   date = date.split(' ')
 
   switch (date[2]) {
-    case "janv.":
+    case 'janv.':
       date[2] = '01'
       break
-    case "févr.":
+    case 'févr.':
       date[2] = '02'
       break
-    case "mars":
+    case 'mars':
       date[2] = '03'
       break
-    case "avr.":
+    case 'avr.':
       date[2] = '04'
       break
-    case "mai.":
+    case 'mai.':
       date[2] = '05'
       break
-    case "juin":
+    case 'juin':
       date[2] = '06'
       break
-    case "juill.":
+    case 'juill.':
       date[2] = '07'
       break
-    case "aout":
+    case 'aout':
       date[2] = '08'
       break
-    case "sept.":
+    case 'sept.':
       date[2] = '09'
       break
-    case "oct.":
+    case 'oct.':
       date[2] = '10'
       break
-    case "nov.":
+    case 'nov.':
       date[2] = '11'
       break
-    case "déc.":
+    case 'déc.':
       date[2] = '12'
       break
   }
