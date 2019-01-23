@@ -55,8 +55,8 @@
   ],
   "locales": {
     "fr": {
-      "short_description": "Connecteur Digitick",
-      "long_description": "Ce connecteur récupère les factures des événements réservés depuis la plateforme digitick.com.",
+      "short_description": "Récupère vos réservations Digitick",
+      "long_description": "Génère des pdf avec vos réservations Digitick.\n\n&nbsp;\n\n*A noter* : Digitick demande à tout ces utilisateurs ayant un compte datant d’avant le 19 décembre 2019 de recréer son compte. Vérifiez bien que vous possédez un nouveau compte Digitick !",
       "permissions": {
         "bank operations": {
           "description": "Utilisé pour relier les factures à des operations bancaires"
@@ -73,8 +73,8 @@
       }
     },
     "en": {
-      "short_description": "Digitick Connector",
-      "long_description": "This connector retrieves invoices for reserved events from the digitick.com platform.",
+      "short_description": "Fetch your Digitick reservations",
+      "long_description": "Create pdf documents with your Digitick reservations.\n\n&nbsp;\n\n*Note*: Digitick asks all users with an account dating from before December 19, 2019 to recreate their account. Make sure you have a new Digitick account!",
       "permissions": {
         "bank operations": {
           "description": "Required to link bank operations to bills"
