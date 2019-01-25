@@ -129,10 +129,7 @@ async function parseDocuments($) {
 
     const $html = cheerio.load(html)
 
-    var pdf = createCozyPDFDocument(
-      'Généré par Cozy \n\n',
-      link
-    )
+    var pdf = createCozyPDFDocument('Généré par Cozy \n\n', link)
     htmlToPDF($html, pdf, $html('body'))
     doc.filestream = pdf
     doc.filestream.end()
