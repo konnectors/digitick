@@ -1,0 +1,96 @@
+{
+  "version": "1.4.0",
+  "name": "Digitick",
+  "type": "konnector",
+  "language": "node",
+  "icon": "icon.svg",
+  "slug": "digitick",
+  "source": "git@github.com:konnectors/digitick.git",
+  "editor": "Cozy",
+  "vendor_link": "https://www.digitick.com",
+  "categories": [
+    "shopping"
+  ],
+  "fields": {
+    "login": {
+      "type": "email"
+    },
+    "password": {
+      "type": "password"
+    },
+    "advancedFields": {
+      "folderPath": {
+        "advanced": true,
+        "isRequired": false
+      }
+    }
+  },
+  "data_types": [
+    "bill"
+  ],
+  "permissions": {
+    "bank operations": {
+      "type": "io.cozy.bank.operations"
+    },
+    "bills": {
+      "type": "io.cozy.bills"
+    },
+    "files": {
+      "type": "io.cozy.files"
+    },
+    "accounts": {
+      "type": "io.cozy.accounts",
+      "verbs": [
+        "GET"
+      ]
+    }
+  },
+  "developer": {
+    "name": "Cozy Cloud",
+    "url": "https://cozy.io"
+  },
+  "langs": [
+    "fr",
+    "en"
+  ],
+  "locales": {
+    "fr": {
+      "short_description": "Récupère vos réservations Digitick",
+      "long_description": "Génère des pdf avec vos réservations Digitick.\n\n&nbsp;\n\n*A noter* : Digitick demande à tout ces utilisateurs ayant un compte datant d’avant le 19 décembre 2019 de recréer son compte. Vérifiez bien que vous possédez un nouveau compte Digitick !",
+      "permissions": {
+        "bank operations": {
+          "description": "Utilisé pour relier les factures à des operations bancaires"
+        },
+        "bills": {
+          "description": "Utilisé pour sauver les données des factures"
+        },
+        "files": {
+          "description": "Utilisé pour sauvegarder les factures"
+        },
+        "accounts": {
+          "description": "Utilisé pour obtenir les données du compte"
+        }
+      }
+    },
+    "en": {
+      "short_description": "Fetch your Digitick reservations",
+      "long_description": "Create pdf documents with your Digitick reservations.\n\n&nbsp;\n\n*Note*: Digitick asks all users with an account dating from before December 19, 2019 to recreate their account. Make sure you have a new Digitick account!",
+      "permissions": {
+        "bank operations": {
+          "description": "Required to link bank operations to bills"
+        },
+        "bills": {
+          "description": "Required to save the bills data"
+        },
+        "files": {
+          "description": "Required to save the bills"
+        },
+        "accounts": {
+          "description": "Required to get the account's data"
+        }
+      }
+    }
+  },
+  "banksTransactionRegExp": "\\bdigitick\\b",
+  "manifest_version": "2"
+}
