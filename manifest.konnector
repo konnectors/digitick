@@ -13,8 +13,7 @@
   ],
   "fields": {
     "login": {
-      "type": "email"
-    },
+      "type": "email" },
     "password": {
       "type": "password"
     },
@@ -56,7 +55,7 @@
   "locales": {
     "fr": {
       "short_description": "Récupère vos réservations Digitick",
-      "long_description": "Génère des pdf avec vos réservations Digitick.\n\n&nbsp;\n\n*A noter* : Digitick demande à tout ces utilisateurs ayant un compte datant d’avant le 19 décembre 2019 de recréer son compte. Vérifiez bien que vous possédez un nouveau compte Digitick !",
+      "long_description": "Génère des pdf avec vos réservations Digitick.\n\n&nbsp;\n\n*A noter* : Digitick demande à tout ces utilisateurs ayant un compte datant d’avant le 19 décembre 2019 de recréer son compte. Vérifiez bien que vous possédez un nouveau compte Digitick !\n\n⚠  La règle de complexité des mots de passe à changé chez Digitick récemment. Utilisez un mot de passe d'au moins 8 caractères avec des majuscules, des minuscules et des chiffres et au moins 6 caractères différents.",
       "permissions": {
         "bank operations": {
           "description": "Utilisé pour relier les factures à des operations bancaires"
@@ -92,5 +91,8 @@
     }
   },
   "banksTransactionRegExp": "\\bdigitick\\b",
+  "features": [
+    "HTML_TO_PDF"
+  ],
   "manifest_version": "2"
 }
