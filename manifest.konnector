@@ -1,11 +1,11 @@
 {
-  "version": "1.4.0",
+  "version": "1.3.2",
   "name": "Digitick",
   "type": "konnector",
   "language": "node",
   "icon": "icon.svg",
   "slug": "digitick",
-  "source": "git@github.com:konnectors/digitick.git",
+  "source": "git://github.com/konnectors/digitick.git",
   "editor": "Cozy",
   "vendor_link": "https://www.digitick.com",
   "categories": [

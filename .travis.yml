@@ -1,13 +1,12 @@
 language: node_js
 node_js:
-- '12'
+- '8'
 env:
   global:
-  - MATTERMOST_CHANNEL=publication
-  # REGISTRY_TOKEN(editor=cozy, app=digitick)
+  - GH_USER_EMAIL="travis@example.org"
+  - GH_USER_NAME="cozy-bot"
+  - DEPLOY_REPOSITORY="git@github.com:konnectors/digitick.git"
   - secure: OrTok8XVivPYJV+FiGDDFunKiADr/jShIZgIqWwWA7xfgpLM7o7gvCJM7tHKxpWLMxUH4KuO47oPb1hJ4A3pSVxjIjHWM5NnkAXi5rzUnsFRuUvCcn9BIxtD82bzGOV/yVWmknt0/0kMGR5J4ZT+vze+v2AlUPJXcH8+s1CmMXi90UWVUvzA8/uLskKSUHwNNpHt/8dKClf1fNOTyxVPfFSJN0mYYGBTFvzI0zt4LBwMQ3d7NvlANek7xGRfPxl3TI6W4DFV7JsBR1lrHzj3S+hLgCKT60vBpjyfPnDeYv2SlfcN51XfRGUFAudtq1UtYvYJbfYNg2d1pZejAnfqQSy6bQIccfcN3huXef1D9Enrh1OXJTw659kULCuWrL4Z1veDacuv6gydi151b2TSrkmtNkUVW3kX9PK0m7LfkFu+VzvLjFGk5qciU2f4xSh1FGkEhYj3+RjcJiMqB63PvXvQJWSsNQlWB/1Y7tdRoqHyedQL7N4Qh//+0yW7OFj91I+lMgmvnugO8Ebrt/I3ZUdTRX87nUpMwFRc2rGghPPI3tyaK+RSxcGMF0UM9MGi/9UEgkPHhu61Ks56AxIZlfrlKbFPNapwhM6wykMTku/L5k+TPrfPoxM/whP5JAn9lUfw8Z8Tp43YIre5YUh8NjOeFrOCl/0Ne2TMQImBYu4=
-  # MATTERMOST_HOOK_URL
-  - secure: XvEev4llzk7w+y3rVYo4v56HpGCzFNAGI0RxaeyBWB0j2+2EQSP7ByCPufR8Rq1dEfIxUGMW6PoNBpojkAoDvvjh9N5tpPMhznlRTf1fUJsj6/nq9Sv5vp6oVq3qvCNYFn/N3filieKz22QOYrZOd2iyCgrciBMBFj6CNMN2YuY0A4RqKH0BL6NSda5cDE6iCQIVFg4UNTZYlvwS+smOj6qTHlU34P958bshgx1tXS4MyH9WcVex1zID9nOyFZ4z2eFv272vbOBWZmwe9xiywqKZPexoGHQsDpH+iwGAyRpc6PrNEurfO+WaRQQ4Ycwf5K9C3wfFwIUGFfm7bKKyF/a6Q7C/k1naz4Wcwpws9vqAFGyNcWqRKo6PLSCVf7qPBM46n4AG1cd6oM1NjJRiFuigx9FAiRrI0VW7W1y/FHwJB28p38OsYeDS5skegno/MBQms9LBqQn3n0foWjdbQV0yErVMRYIuNBpYLlUWgV1VmAhqC7LozN7NAOPZWq4pYGUOfBz+4omC94zbI3K5g9lxs4fjRyoF3RGTw9cP9U0srdAM3ku43zbJVwsXY/+6Kk/ofFr+euUjtTJ8lnubSUaTtryjMW+oap8PFySzLH/Gsl6AenE8RPOWowrgD1bhUZ5IJe9Smoy3pFThflHTEO6E+hbxM2NRH9Btc8KnLeU=
 cache:
   yarn: true
   directories:
@@ -19,6 +18,7 @@ branches:
 script:
 - yarn lint
 - yarn build
+- yarn run check
 deploy:
 - provider: script
   skip-cleanup: true
@@ -27,7 +27,7 @@ deploy:
     branch: master
 - provider: script
   skip-cleanup: true
-  script: DEPLOY_BRANCH=build yarn deploy && yarn cozyPublish --postpublish mattermost
+  script: DEPLOY_BRANCH=build yarn deploy && yarn cozyPublish
   on:
     tags: true
 before_install:
